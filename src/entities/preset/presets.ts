@@ -1,4 +1,11 @@
-export const PRESETS = [
+export type Preset = {
+  label: string
+  w: number
+  h: number
+  ratio: string
+}
+
+export const PRESETS: Preset[] = [
   { label: '160 × 120', w: 160, h: 120, ratio: '4:3' },
   { label: '240 × 160', w: 240, h: 160, ratio: '3:2' },
   { label: '320 × 240', w: 320, h: 240, ratio: '4:3' },

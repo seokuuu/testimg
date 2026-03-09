@@ -1,4 +1,39 @@
-export const MESSAGES = {
+export type Lang = 'en' | 'ko'
+
+export type Messages = {
+  title: string
+  subtitle: string
+  modeResolution: string
+  modeFilesize: string
+  resolution: string
+  widthPx: string
+  heightPx: string
+  manualInput: string
+  recommended: string
+  fileSize: string
+  sizeMB: string
+  sizeRange: string
+  format: string
+  generate: string
+  generating: string
+  preview: string
+  previewPlaceholder: string
+  done: string
+  errorResolution: string
+  errorSizeRange: string
+  errorSizeNum: string
+  adjusting: string
+  scalingUp: string
+  finetuning: string
+  maxReached: string
+  selectPreset: string
+  close: string
+  searchPreset: string
+  showInfo: string
+  pngNote: string
+}
+
+export const MESSAGES: Record<Lang, Messages> = {
   en: {
     title: 'Image Generator',
     subtitle: 'Create test images by resolution or file size — free & instant',

@@ -25,6 +25,16 @@ function setProgress(pct, msg) {
   if (txt && msg) txt.textContent = msg
 }
 
+function updateGenerateBtn() {
+  const btn = document.getElementById('btn-generate')
+  if (!btn) return
+  const { currentMode, resSubMode, inputW, inputH, inputSize } = state
+  const disabled =
+    (currentMode === 'resolution' && resSubMode === 'manual' && (inputW === '' || inputH === '')) ||
+    (currentMode === 'filesize' && inputSize === '')
+  btn.disabled = disabled
+}
+
 function setStatus(msg) {
   const txt = document.getElementById('status-text')
   const progressWrap = document.getElementById('progress-wrap')
@@ -158,18 +168,30 @@ export function bindEvents(t, lang) {
 
   // 직접입력 해상도
   document.getElementById('width')?.addEventListener('input', e => {
-    state.currentW = parseInt(e.target.value) || state.currentW
-    drawPreview()
+    state.inputW = e.target.value
+    const v = parseInt(e.target.value)
+    if (v >= 1) state.currentW = v
+    updateGenerateBtn()
+    if (v >= 1) drawPreview()
   })
   document.getElementById('height')?.addEventListener('input', e => {
-    state.currentH = parseInt(e.target.value) || state.currentH
-    drawPreview()
+    state.inputH = e.target.value
+    const v = parseInt(e.target.value)
+    if (v >= 1) state.currentH = v
+    updateGenerateBtn()
+    if (v >= 1) drawPreview()
   })
 
   // 용량 입력
   document.getElementById('target-size')?.addEventListener('input', e => {
-    state.targetSizeMB = parseFloat(e.target.value) || state.targetSizeMB
-    drawPreview()
+    // 소숫점 입력 차단: 정수만 허용
+    const raw = e.target.value.replace(/[^0-9]/g, '')
+    e.target.value = raw
+    state.inputSize = raw
+    const v = parseInt(raw)
+    if (v >= 1) state.targetSizeMB = v
+    updateGenerateBtn()
+    if (v >= 1) drawPreview()
   })
 
   // show info 토글
@@ -208,6 +230,8 @@ export function bindEvents(t, lang) {
       state.selectedPreset = p
       state.currentW = p.w
       state.currentH = p.h
+      state.inputW = String(p.w)
+      state.inputH = String(p.h)
       closeModal()
       render()
     })
