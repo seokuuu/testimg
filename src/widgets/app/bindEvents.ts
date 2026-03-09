@@ -6,28 +6,39 @@ import { adjustToTargetSize } from '../../features/generate/adjustSize.js'
 import { trackDownload } from '../../features/analytics/ga.js'
 import { state } from './state.js'
 import { drawPreview } from './drawPreview.js'
+import type { Messages } from '../../shared/i18n/messages.js'
 
-let render
-export function setRender(fn) {
+let render: (() => void) | undefined
+export function setRender(fn: () => void) {
   render = fn
 }
 
 function closeModal() {
   const modal = document.getElementById('preset-modal')
-  modal.classList.add('hidden')
-  modal.classList.remove('flex')
+  modal?.classList.add('hidden')
+  modal?.classList.remove('flex')
 }
 
-function setProgress(pct, msg) {
-  const bar = document.getElementById('progress-bar')
-  const txt = document.getElementById('status-text')
+function setProgress(pct: number, msg?: string) {
+  const bar = document.getElementById('progress-bar') as HTMLElement | null
+  const txt = document.getElementById('status-text') as HTMLElement | null
   if (bar) bar.style.width = pct + '%'
   if (txt && msg) txt.textContent = msg
 }
 
-function setStatus(msg) {
-  const txt = document.getElementById('status-text')
-  const progressWrap = document.getElementById('progress-wrap')
+function updateGenerateBtn() {
+  const btn = document.getElementById('btn-generate') as HTMLButtonElement | null
+  if (!btn) return
+  const { currentMode, resSubMode, inputW, inputH, inputSize } = state
+  const disabled =
+    (currentMode === 'resolution' && resSubMode === 'manual' && (inputW === '' || inputH === '')) ||
+    (currentMode === 'filesize' && inputSize === '')
+  btn.disabled = disabled
+}
+
+function setStatus(msg: string) {
+  const txt = document.getElementById('status-text') as HTMLElement | null
+  const progressWrap = document.getElementById('progress-wrap') as HTMLElement | null
   if (txt) txt.textContent = msg
   if (progressWrap) {
     progressWrap.classList.remove('hidden')
@@ -35,11 +46,11 @@ function setStatus(msg) {
   }
 }
 
-async function handleGenerate(t) {
+async function handleGenerate(t: Messages) {
   const { currentMode, currentW, currentH, targetSizeMB, currentFormat, showInfo } = state
 
   if (currentMode === 'resolution') {
-    if (!currentW || !currentH || currentW < 1 || currentH < 1) {
+    if (!currentW || !currentH || currentW < 1 || currentH < 1 || currentW > 9999 || currentH > 9999) {
       setStatus(t.errorResolution)
       return
     }
@@ -48,8 +59,8 @@ async function handleGenerate(t) {
     if (targetSizeMB < 1 || targetSizeMB > 20) { setStatus(t.errorSizeRange); return }
   }
 
-  const btn = document.getElementById('btn-generate')
-  const progressWrap = document.getElementById('progress-wrap')
+  const btn = document.getElementById('btn-generate') as HTMLButtonElement
+  const progressWrap = document.getElementById('progress-wrap') as HTMLElement
   btn.disabled = true
   btn.textContent = t.generating
   progressWrap.classList.remove('hidden')
@@ -60,7 +71,7 @@ async function handleGenerate(t) {
   const canvas = document.createElement('canvas')
 
   try {
-    let blob
+    let blob: Blob
 
     if (currentMode === 'resolution') {
       const lines = showInfo ? [`${currentW} × ${currentH} px`] : []
@@ -79,7 +90,7 @@ async function handleGenerate(t) {
       }, t)
 
       if (showInfo) {
-        const finalLines = [`${canvas.width} × ${canvas.height} px`, formatBytes(blob.size)]
+        const finalLines = [`${canvas.width} × ${canvas.height} px`, formatBytes(targetBytes)]
         drawTextOnly(canvas, text, finalLines)
         blob = await canvasToBlob(canvas, currentFormat, 1.0)
       }
@@ -97,15 +108,18 @@ async function handleGenerate(t) {
     })
 
     // 미리보기 업데이트
-    const previewCanvas = document.getElementById('preview-canvas')
+    const previewCanvas = document.getElementById('preview-canvas') as HTMLCanvasElement | null
     if (previewCanvas) {
-      const ctx = previewCanvas.getContext('2d')
+      const ctx = previewCanvas.getContext('2d')!
       previewCanvas.width = canvas.width
       previewCanvas.height = canvas.height
       ctx.drawImage(canvas, 0, 0)
     }
-    document.getElementById('preview-meta').textContent =
-      `${canvas.width} × ${canvas.height} px · ${formatBytes(blob.size)} · ${currentFormat.split('/')[1].toUpperCase()}`
+    const previewMeta = document.getElementById('preview-meta')
+    if (previewMeta) {
+      previewMeta.textContent =
+        `${canvas.width} × ${canvas.height} px · ${formatBytes(blob.size)} · ${currentFormat.split('/')[1].toUpperCase()}`
+    }
 
     // 다운로드
     const ext = currentFormat.split('/')[1]
@@ -130,60 +144,85 @@ async function handleGenerate(t) {
   }
 }
 
-export function bindEvents(t, lang) {
+export function bindEvents(t: Messages, _lang: string) {
   // 모드 전환
   document.querySelectorAll('.mode-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      state.currentMode = btn.dataset.mode
+      const mode = (btn as HTMLElement).dataset.mode as 'resolution' | 'filesize'
+      state.currentMode = mode
       if (state.currentMode === 'filesize' && state.currentFormat === 'image/png') state.currentFormat = 'image/jpeg'
-      render()
+      render?.()
     })
   })
 
   // 해상도 서브모드
   document.querySelectorAll('.sub-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      state.resSubMode = btn.dataset.sub
-      render()
+      state.resSubMode = (btn as HTMLElement).dataset.sub as 'preset' | 'manual'
+      render?.()
     })
   })
 
   // 포맷 선택
   document.querySelectorAll('.fmt-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      state.currentFormat = btn.dataset.fmt
-      render()
+      state.currentFormat = (btn as HTMLElement).dataset.fmt!
+      render?.()
     })
   })
 
   // 직접입력 해상도
+  const MAX_RES = 9999
   document.getElementById('width')?.addEventListener('input', e => {
-    state.currentW = parseInt(e.target.value) || state.currentW
-    drawPreview()
+    const target = e.target as HTMLInputElement
+    // 소수점·음수 차단: 양의 정수만 허용
+    const raw = target.value.replace(/[^0-9]/g, '')
+    target.value = raw
+    state.inputW = raw
+    let v = parseInt(raw)
+    if (v > MAX_RES) { v = MAX_RES; target.value = String(v); state.inputW = String(v) }
+    if (v >= 1) state.currentW = v
+    updateGenerateBtn()
+    if (v >= 1) drawPreview()
   })
   document.getElementById('height')?.addEventListener('input', e => {
-    state.currentH = parseInt(e.target.value) || state.currentH
-    drawPreview()
+    const target = e.target as HTMLInputElement
+    // 소수점·음수 차단: 양의 정수만 허용
+    const raw = target.value.replace(/[^0-9]/g, '')
+    target.value = raw
+    state.inputH = raw
+    let v = parseInt(raw)
+    if (v > MAX_RES) { v = MAX_RES; target.value = String(v); state.inputH = String(v) }
+    if (v >= 1) state.currentH = v
+    updateGenerateBtn()
+    if (v >= 1) drawPreview()
   })
 
   // 용량 입력
   document.getElementById('target-size')?.addEventListener('input', e => {
-    state.targetSizeMB = parseFloat(e.target.value) || state.targetSizeMB
-    drawPreview()
+    const target = e.target as HTMLInputElement
+    // 소숫점 입력 차단: 정수만 허용
+    const raw = target.value.replace(/[^0-9]/g, '')
+    target.value = raw
+    state.inputSize = raw
+    const v = parseInt(raw)
+    if (v >= 1) state.targetSizeMB = v
+    updateGenerateBtn()
+    if (v >= 1) drawPreview()
   })
 
   // show info 토글
   document.getElementById('show-info')?.addEventListener('change', e => {
-    state.showInfo = e.target.checked
+    state.showInfo = (e.target as HTMLInputElement).checked
     drawPreview()
   })
 
   // 프리셋 모달 열기
   document.getElementById('btn-open-preset')?.addEventListener('click', () => {
-    const modal = document.getElementById('preset-modal')
+    const modal = document.getElementById('preset-modal')!
     modal.classList.remove('hidden')
     modal.classList.add('flex')
-    document.getElementById('preset-search').focus()
+    ;(document.getElementById('preset-search') as HTMLInputElement).focus()
   })
 
   // 모달 닫기
@@ -194,22 +233,24 @@ export function bindEvents(t, lang) {
 
   // 프리셋 검색
   document.getElementById('preset-search')?.addEventListener('input', e => {
-    const q = e.target.value.toLowerCase()
+    const q = (e.target as HTMLInputElement).value.toLowerCase()
     document.querySelectorAll('.preset-item').forEach(btn => {
-      const text = btn.textContent.toLowerCase()
-      btn.closest('li').style.display = text.includes(q) ? '' : 'none'
+      const text = btn.textContent?.toLowerCase() ?? ''
+      ;(btn.closest('li') as HTMLElement).style.display = text.includes(q) ? '' : 'none'
     })
   })
 
   // 프리셋 선택
   document.querySelectorAll('.preset-item').forEach(btn => {
     btn.addEventListener('click', () => {
-      const p = PRESETS[parseInt(btn.dataset.idx)]
+      const p = PRESETS[parseInt((btn as HTMLElement).dataset.idx!)]
       state.selectedPreset = p
       state.currentW = p.w
       state.currentH = p.h
+      state.inputW = String(p.w)
+      state.inputH = String(p.h)
       closeModal()
-      render()
+      render?.()
     })
   })
 

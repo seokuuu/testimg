@@ -1,6 +1,42 @@
-export const MESSAGES = {
+export type Lang = 'en' | 'ko'
+
+export type Messages = {
+  title: string
+  subtitle: string
+  modeResolution: string
+  modeFilesize: string
+  resolution: string
+  widthPx: string
+  heightPx: string
+  manualInput: string
+  recommended: string
+  fileSize: string
+  sizeMB: string
+  sizeRange: string
+  format: string
+  generate: string
+  generating: string
+  preview: string
+  previewPlaceholder: string
+  done: string
+  errorResolution: string
+  errorSizeRange: string
+  errorSizeNum: string
+  adjusting: string
+  scalingUp: string
+  finetuning: string
+  maxReached: string
+  selectPreset: string
+  close: string
+  searchPreset: string
+  showInfo: string
+  pngNote: string
+  decimalNote: string
+}
+
+export const MESSAGES: Record<Lang, Messages> = {
   en: {
-    title: 'Image Generator',
+    title: 'TestImg',
     subtitle: 'Create test images by resolution or file size — free & instant',
     modeResolution: 'Resolution Mode',
     modeFilesize: 'File Size Mode',
@@ -30,9 +66,10 @@ export const MESSAGES = {
     searchPreset: 'Search…',
     showInfo: 'Show resolution & size on image',
     pngNote: '※ PNG does not support size targeting',
+    decimalNote: '※ Decimal sizes are approximate',
   },
   ko: {
-    title: '이미지 생성기',
+    title: 'TestImg',
     subtitle: '해상도 또는 용량으로 테스트 이미지를 즉시 생성하세요',
     modeResolution: '해상도 모드',
     modeFilesize: '용량 모드',
@@ -62,5 +99,6 @@ export const MESSAGES = {
     searchPreset: '검색…',
     showInfo: '이미지에 해상도 & 용량 텍스트 표시',
     pngNote: '※ PNG는 용량 조절을 지원하지 않습니다',
+    decimalNote: '※ 소수점 단위 용량은 근사값입니다',
   },
 }

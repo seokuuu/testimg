@@ -1,10 +1,21 @@
 import { drawToCanvas, canvasToBlob } from '../../shared/lib/canvas.js'
 import { formatBytes } from '../../shared/lib/format.js'
+import type { Messages } from '../../shared/i18n/messages.js'
 
-export async function adjustToTargetSize(canvas, targetBytes, mime, bgColor, textColor, baseW, baseH, onProgress, t) {
+export async function adjustToTargetSize(
+  canvas: HTMLCanvasElement,
+  targetBytes: number,
+  mime: string,
+  bgColor: string,
+  textColor: string,
+  baseW: number,
+  baseH: number,
+  onProgress: (pct: number, msg?: string) => void,
+  t: Messages
+): Promise<Blob> {
   if (mime === 'image/png') return canvasToBlob(canvas, mime)
 
-  const allowance = 50 * 1024 // 50KB 허용오차
+  const allowance = 50 * 1024
 
   drawToCanvas(canvas, baseW, baseH, bgColor, textColor, [], 255, false)
   let maxBlob = await canvasToBlob(canvas, mime, 1.0)
