@@ -50,7 +50,7 @@ async function handleGenerate(t: Messages) {
   const { currentMode, currentW, currentH, targetSizeMB, currentFormat, showInfo } = state
 
   if (currentMode === 'resolution') {
-    if (!currentW || !currentH || currentW < 1 || currentH < 1) {
+    if (!currentW || !currentH || currentW < 1 || currentH < 1 || currentW > 9999 || currentH > 9999) {
       setStatus(t.errorResolution)
       return
     }
@@ -172,18 +172,27 @@ export function bindEvents(t: Messages, _lang: string) {
   })
 
   // 직접입력 해상도
+  const MAX_RES = 9999
   document.getElementById('width')?.addEventListener('input', e => {
     const target = e.target as HTMLInputElement
-    state.inputW = target.value
-    const v = parseInt(target.value)
+    // 소수점·음수 차단: 양의 정수만 허용
+    const raw = target.value.replace(/[^0-9]/g, '')
+    target.value = raw
+    state.inputW = raw
+    let v = parseInt(raw)
+    if (v > MAX_RES) { v = MAX_RES; target.value = String(v); state.inputW = String(v) }
     if (v >= 1) state.currentW = v
     updateGenerateBtn()
     if (v >= 1) drawPreview()
   })
   document.getElementById('height')?.addEventListener('input', e => {
     const target = e.target as HTMLInputElement
-    state.inputH = target.value
-    const v = parseInt(target.value)
+    // 소수점·음수 차단: 양의 정수만 허용
+    const raw = target.value.replace(/[^0-9]/g, '')
+    target.value = raw
+    state.inputH = raw
+    let v = parseInt(raw)
+    if (v > MAX_RES) { v = MAX_RES; target.value = String(v); state.inputH = String(v) }
     if (v >= 1) state.currentH = v
     updateGenerateBtn()
     if (v >= 1) drawPreview()

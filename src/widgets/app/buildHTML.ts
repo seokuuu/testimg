@@ -76,13 +76,13 @@ export function buildHTML(t: Messages, lang: Lang) {
           <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
             <div class="flex flex-col gap-1">
               <label class="text-xs text-neutral-500">${t.widthPx}</label>
-              <input id="width" type="number" value="${inputW}" min="1" max="8000"
+              <input id="width" type="number" value="${inputW}" min="1" max="9999"
                 class="bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 w-full" />
             </div>
             <span class="text-neutral-600 mt-5">×</span>
             <div class="flex flex-col gap-1">
               <label class="text-xs text-neutral-500">${t.heightPx}</label>
-              <input id="height" type="number" value="${inputH}" min="1" max="8000"
+              <input id="height" type="number" value="${inputH}" min="1" max="9999"
                 class="bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 w-full" />
             </div>
           </div>
