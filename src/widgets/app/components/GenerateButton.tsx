@@ -51,7 +51,7 @@ export default function GenerateButton() {
         blob = await adjustToTargetSize(canvas, targetBytes, currentFormat, bg, text, fsW, fsH, updateProgress, t)
 
         if (showInfo) {
-          const finalLines = [`${canvas.width} × ${canvas.height} px`, formatBytes(blob.size)]
+          const finalLines = [`${canvas.width} × ${canvas.height} px`, formatBytes(targetBytes)]
           drawTextOnly(canvas, text, finalLines)
           blob = await canvasToBlob(canvas, currentFormat, 1.0)
         }

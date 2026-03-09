@@ -1,6 +1,6 @@
-import { MESSAGES } from '../../shared/i18n/messages.js'
+import { MESSAGES, type Lang } from '../../shared/i18n/messages.js'
 
-export let lang = navigator.language?.startsWith('ko') ? 'ko' : 'en'
+export let lang: Lang = navigator.language?.startsWith('ko') ? 'ko' : 'en'
 export let t = MESSAGES[lang]
 
 export function toggleLang() {
@@ -8,7 +8,7 @@ export function toggleLang() {
   t = MESSAGES[lang]
 }
 
-export function setLang(newLang) {
+export function setLang(newLang: Lang) {
   lang = newLang
   t = MESSAGES[lang]
 }

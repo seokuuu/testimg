@@ -1,8 +1,8 @@
 import { PRESETS } from '../../entities/preset/presets.js'
 
 export const state = {
-  currentMode: 'resolution',
-  resSubMode: 'preset',
+  currentMode: 'resolution' as 'resolution' | 'filesize',
+  resSubMode: 'preset' as 'preset' | 'manual',
   currentW: 1920,
   currentH: 1080,
   inputW: '1920',

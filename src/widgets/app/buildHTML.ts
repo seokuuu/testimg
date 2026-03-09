@@ -1,9 +1,10 @@
 import { SHOW_ADS } from '../../shared/config/ads.js'
 import { PRESETS } from '../../entities/preset/presets.js'
 import { state } from './state.js'
+import type { Messages, Lang } from '../../shared/i18n/messages.js'
 
-export function buildHTML(t, lang) {
-  const { currentMode, resSubMode, currentW, currentH, inputW, inputH, currentFormat, targetSizeMB, inputSize, showInfo, selectedPreset } = state
+export function buildHTML(t: Messages, lang: Lang) {
+  const { currentMode, resSubMode, inputW, inputH, currentFormat, inputSize, showInfo, selectedPreset } = state
 
   const isGenerateDisabled =
     (currentMode === 'resolution' && state.resSubMode === 'manual' && (inputW === '' || inputH === '')) ||
@@ -105,6 +106,7 @@ export function buildHTML(t, lang) {
               class="bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 w-full" />
           </div>
           <p class="text-xs text-neutral-600">${t.pngNote}</p>
+          <p class="text-xs text-neutral-600">${t.decimalNote}</p>
         </section>
         ` : ''}
 

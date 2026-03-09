@@ -17,6 +17,7 @@ export default function FileSizePanel() {
         />
       </div>
       <p className="text-xs text-neutral-600">{t.pngNote}</p>
+      <p className="text-xs text-neutral-600">{t.decimalNote}</p>
     </section>
   )
 }
