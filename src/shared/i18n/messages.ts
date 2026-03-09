@@ -36,7 +36,7 @@ export type Messages = {
 
 export const MESSAGES: Record<Lang, Messages> = {
   en: {
-    title: 'Image Generator',
+    title: 'TestImg',
     subtitle: 'Create test images by resolution or file size — free & instant',
     modeResolution: 'Resolution Mode',
     modeFilesize: 'File Size Mode',
@@ -69,7 +69,7 @@ export const MESSAGES: Record<Lang, Messages> = {
     decimalNote: '※ Decimal sizes are approximate',
   },
   ko: {
-    title: '이미지 생성기',
+    title: 'TestImg',
     subtitle: '해상도 또는 용량으로 테스트 이미지를 즉시 생성하세요',
     modeResolution: '해상도 모드',
     modeFilesize: '용량 모드',
