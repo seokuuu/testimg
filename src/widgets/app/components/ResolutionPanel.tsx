@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext.js'
 import PresetModal from './PresetModal.js'
 
 export default function ResolutionPanel() {
-  const { resSubMode, setResSubMode, inputW, inputH, setWidth, setHeight, selectedPreset, t } = useApp()
+  const { resSubMode, setResSubMode, inputW, inputH, setWidth, setHeight, selectedPreset, t, currentW, currentH } = useApp()
   const [modalOpen, setModalOpen] = useState(false)
 
   return (
@@ -28,24 +28,29 @@ export default function ResolutionPanel() {
         </div>
 
         {resSubMode === 'manual' ? (
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-neutral-500">{t.widthPx}</label>
-              <input
-                type="number" value={inputW} min="1" max="8000"
-                onChange={e => setWidth(e.target.value)}
-                className="bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 w-full"
-              />
+          <div className="flex flex-col gap-2">
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-neutral-500">{t.widthPx}</label>
+                <input
+                  type="number" value={inputW} min="1" max="8000"
+                  onChange={e => setWidth(e.target.value)}
+                  className="bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 w-full"
+                />
+              </div>
+              <span className="text-neutral-600 mt-5">×</span>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-neutral-500">{t.heightPx}</label>
+                <input
+                  type="number" value={inputH} min="1" max="8000"
+                  onChange={e => setHeight(e.target.value)}
+                  className="bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 w-full"
+                />
+              </div>
             </div>
-            <span className="text-neutral-600 mt-5">×</span>
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-neutral-500">{t.heightPx}</label>
-              <input
-                type="number" value={inputH} min="1" max="8000"
-                onChange={e => setHeight(e.target.value)}
-                className="bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 w-full"
-              />
-            </div>
+            {(currentW > 8000 || currentH > 8000) && (
+              <p className="text-xs text-red-400">{t.errorMaxResolution}</p>
+            )}
           </div>
         ) : (
           <button

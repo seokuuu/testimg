@@ -34,6 +34,8 @@ export type Messages = {
   decimalNote: string
   feedbackButton: string
   footerAuthor: string
+  errorMaxResolution: string
+  inAppBrowserNotice: string
 }
 
 export const MESSAGES: Record<Lang, Messages> = {
@@ -71,6 +73,8 @@ export const MESSAGES: Record<Lang, Messages> = {
     decimalNote: '※ Decimal sizes are approximate',
     feedbackButton: 'Send Feedback',
     footerAuthor: 'Jang Seokwon',
+    errorMaxResolution: 'Max resolution is 8000px',
+    inAppBrowserNotice: 'Download is not supported in this in-app browser. Please open in an external browser (tap ··· menu → Open in browser).',
   },
   ko: {
     title: 'TestImg',
@@ -106,5 +110,7 @@ export const MESSAGES: Record<Lang, Messages> = {
     decimalNote: '※ 소수점 단위 용량은 근사값입니다',
     feedbackButton: '피드백 보내기',
     footerAuthor: '장석원',
+    errorMaxResolution: '최대 해상도는 8000px입니다',
+    inAppBrowserNotice: '앱 내 브라우저에서는 다운로드가 제한됩니다. 우측 상단 메뉴에서 외부 브라우저로 열어주세요.',
   },
 }

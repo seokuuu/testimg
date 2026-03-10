@@ -6,12 +6,19 @@ import { formatBytes } from '../../../shared/lib/format.js'
 import { adjustToTargetSize } from '../../../features/generate/adjustSize.js'
 import { trackDownload } from '../../../features/analytics/ga.js'
 
+function isInAppBrowser() {
+  const ua = navigator.userAgent
+  return /KAKAOTALK|Instagram|FBAN|FBAV|Line\/|Twitter|Snapchat/i.test(ua)
+    || (/iPhone|iPad/.test(ua) && !/Safari/.test(ua))
+}
+
 export default function GenerateButton() {
   const { currentMode, currentW, currentH, currentFormat, targetSizeMB, showInfo, isGenerateDisabled, t } = useApp()
   const [progress, setProgress] = useState(0)
   const [statusMsg, setStatusMsg] = useState('')
   const [generating, setGenerating] = useState(false)
   const [footerVisible, setFooterVisible] = useState(false)
+  const [inAppToast, setInAppToast] = useState(false)
   const observerRef = useRef<IntersectionObserver | null>(null)
 
   useEffect(() => {
@@ -91,12 +98,17 @@ export default function GenerateButton() {
       }
 
       const ext = currentFormat.split('/')[1]
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `image_${canvas.width}x${canvas.height}.${ext}`
-      a.click()
-      URL.revokeObjectURL(url)
+      if (isInAppBrowser()) {
+        setInAppToast(true)
+        setTimeout(() => setInAppToast(false), 6000)
+      } else {
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `image_${canvas.width}x${canvas.height}.${ext}`
+        a.click()
+        URL.revokeObjectURL(url)
+      }
 
     } catch (e) {
       setStatusMsg('Error occurred.')
@@ -112,6 +124,11 @@ export default function GenerateButton() {
 
   return (
     <>
+      {inAppToast && (
+        <div className="fixed top-4 left-4 right-4 z-50 bg-neutral-800 border border-neutral-600 rounded-xl px-4 py-3 text-sm text-neutral-200 shadow-lg">
+          {t.inAppBrowserNotice}
+        </div>
+      )}
       {/* 데스크탑: 기존 위치에 그대로 표시 */}
       <div className="hidden lg:flex lg:flex-col gap-1">
         {(generating || statusMsg) && (

@@ -86,7 +86,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   const isGenerateDisabled =
-    (currentMode === 'resolution' && resSubMode === 'manual' && (inputW === '' || inputH === '')) ||
+    (currentMode === 'resolution' && (
+      (resSubMode === 'manual' && (inputW === '' || inputH === '')) ||
+      currentW > 8000 || currentH > 8000
+    )) ||
     (currentMode === 'filesize' && inputSize === '')
 
   return (
