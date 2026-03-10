@@ -104,4 +104,4 @@ src/
 
 ---
 
-© 2025 장석원. MIT License.
+© 2026 장석원. MIT License.
