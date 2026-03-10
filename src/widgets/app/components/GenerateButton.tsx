@@ -48,6 +48,11 @@ export default function GenerateButton() {
       if (targetSizeMB < 1 || targetSizeMB > 20) { setStatusMsg(t.errorSizeRange); return }
     }
 
+    if (isInAppBrowser()) {
+      setInAppModal(true)
+      return
+    }
+
     setGenerating(true)
     updateProgress(5, t.generating)
 
@@ -98,17 +103,13 @@ export default function GenerateButton() {
         height: canvas.height,
       })
 
-      if (isInAppBrowser()) {
-        setInAppModal(true)
-      } else {
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        const sizeSuffix = currentMode === 'filesize' ? `_${targetSizeMB}mb` : ''
-        a.download = `testimg.art_${canvas.width}x${canvas.height}${sizeSuffix}.${ext}`
-        a.click()
-        URL.revokeObjectURL(url)
-      }
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      const sizeSuffix = currentMode === 'filesize' ? `_${targetSizeMB}mb` : ''
+      a.download = `testimg.art_${canvas.width}x${canvas.height}${sizeSuffix}.${ext}`
+      a.click()
+      URL.revokeObjectURL(url)
 
     } catch (e) {
       setStatusMsg('Error occurred.')
