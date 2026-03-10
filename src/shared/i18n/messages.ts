@@ -32,6 +32,8 @@ export type Messages = {
   showInfo: string
   pngNote: string
   decimalNote: string
+  feedbackButton: string
+  footerAuthor: string
 }
 
 export const MESSAGES: Record<Lang, Messages> = {
@@ -67,6 +69,8 @@ export const MESSAGES: Record<Lang, Messages> = {
     showInfo: 'Show resolution & size on image',
     pngNote: '※ PNG does not support size targeting',
     decimalNote: '※ Decimal sizes are approximate',
+    feedbackButton: 'Send Feedback',
+    footerAuthor: 'Jang Seokwon',
   },
   ko: {
     title: 'TestImg',
@@ -100,5 +104,7 @@ export const MESSAGES: Record<Lang, Messages> = {
     showInfo: '이미지에 해상도 & 용량 텍스트 표시',
     pngNote: '※ PNG는 용량 조절을 지원하지 않습니다',
     decimalNote: '※ 소수점 단위 용량은 근사값입니다',
+    feedbackButton: '피드백 보내기',
+    footerAuthor: '장석원',
   },
 }
