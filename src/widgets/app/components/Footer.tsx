@@ -68,7 +68,7 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="w-full border-t border-neutral-800 bg-neutral-950 mt-8">
+      <footer id="site-footer" className="w-full border-t border-neutral-800 bg-neutral-950 mt-8">
         <div className="max-w-5xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-neutral-600">
             © {new Date().getFullYear()}{' '}
