@@ -48,14 +48,6 @@ export default function GenerateButton() {
       if (targetSizeMB < 1 || targetSizeMB > 20) { setStatusMsg(t.errorSizeRange); return }
     }
 
-    trackDownload({
-      format: currentFormat.split('/')[1],
-      mode: currentMode,
-      sizeMb: currentMode === 'filesize' ? targetSizeMB : null,
-      width: currentMode === 'resolution' ? currentW : null,
-      height: currentMode === 'resolution' ? currentH : null,
-    })
-
     setGenerating(true)
     updateProgress(5, t.generating)
 
@@ -112,7 +104,8 @@ export default function GenerateButton() {
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = `image_${canvas.width}x${canvas.height}.${ext}`
+        const sizeSuffix = currentMode === 'filesize' ? `_${targetSizeMB}mb` : ''
+        a.download = `testimg.art_${canvas.width}x${canvas.height}${sizeSuffix}.${ext}`
         a.click()
         URL.revokeObjectURL(url)
       }
