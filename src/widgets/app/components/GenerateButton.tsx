@@ -105,7 +105,7 @@ export default function GenerateButton() {
         const a = document.createElement('a')
         a.href = url
         const sizeSuffix = currentMode === 'filesize' ? `_${targetSizeMB}mb` : ''
-        a.download = `image_${canvas.width}x${canvas.height}${sizeSuffix}.${ext}`
+        a.download = `testimg.art_${canvas.width}x${canvas.height}${sizeSuffix}.${ext}`
         a.click()
         URL.revokeObjectURL(url)
       }
