@@ -6,7 +6,9 @@ export default function Header() {
   return (
     <header className="flex items-start justify-between gap-4 mb-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">{t.title}</h1>
+        <h1>
+          <img src="/testimg-logo.svg" alt={t.title} className="h-10" />
+        </h1>
         <p className="text-sm text-neutral-400 mt-1">{t.subtitle}</p>
       </div>
       <button
