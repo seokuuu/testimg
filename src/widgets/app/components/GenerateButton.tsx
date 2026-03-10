@@ -140,7 +140,7 @@ export default function GenerateButton() {
                 ✕
               </button>
             </div>
-            <p className="text-sm text-neutral-300 leading-relaxed">{t.inAppBrowserNotice}</p>
+            <p className="text-sm text-neutral-300 leading-relaxed whitespace-pre-line">{t.inAppBrowserNotice}</p>
             <button
               onClick={() => setInAppModal(false)}
               className="mt-6 w-full py-2.5 rounded-lg bg-neutral-800 text-neutral-300 text-sm hover:bg-neutral-700 transition-colors"
