@@ -29,7 +29,7 @@ export default function App() {
         </div>
       )}
 
-      <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-8">
+      <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-8 pb-28 lg:pb-8">
         <Header />
         <div className="flex flex-col lg:flex-row gap-6 items-start">
           <div className="w-full lg:flex-1 flex flex-col gap-4">
