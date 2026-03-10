@@ -35,6 +35,7 @@ export type Messages = {
   feedbackButton: string
   footerAuthor: string
   errorMaxResolution: string
+  inAppBrowserTitle: string
   inAppBrowserNotice: string
 }
 
@@ -74,6 +75,7 @@ export const MESSAGES: Record<Lang, Messages> = {
     feedbackButton: 'Send Feedback',
     footerAuthor: 'Jang Seokwon',
     errorMaxResolution: 'Max resolution is 8000px',
+    inAppBrowserTitle: 'Download Not Available',
     inAppBrowserNotice: 'Download is not supported in this in-app browser. Please open in an external browser (tap ··· menu → Open in browser).',
   },
   ko: {
@@ -111,6 +113,7 @@ export const MESSAGES: Record<Lang, Messages> = {
     feedbackButton: '피드백 보내기',
     footerAuthor: '장석원',
     errorMaxResolution: '최대 해상도는 8000px입니다',
+    inAppBrowserTitle: '다운로드 불가',
     inAppBrowserNotice: '앱 내 브라우저에서는 다운로드가 제한됩니다. 우측 상단 메뉴에서 외부 브라우저로 열어주세요.',
   },
 }

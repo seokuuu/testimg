@@ -18,7 +18,7 @@ export default function GenerateButton() {
   const [statusMsg, setStatusMsg] = useState('')
   const [generating, setGenerating] = useState(false)
   const [footerVisible, setFooterVisible] = useState(false)
-  const [inAppToast, setInAppToast] = useState(false)
+  const [inAppModal, setInAppModal] = useState(false)
   const observerRef = useRef<IntersectionObserver | null>(null)
 
   useEffect(() => {
@@ -48,6 +48,14 @@ export default function GenerateButton() {
       if (targetSizeMB < 1 || targetSizeMB > 20) { setStatusMsg(t.errorSizeRange); return }
     }
 
+    trackDownload({
+      format: currentFormat.split('/')[1],
+      mode: currentMode,
+      sizeMb: currentMode === 'filesize' ? targetSizeMB : null,
+      width: currentMode === 'resolution' ? currentW : null,
+      height: currentMode === 'resolution' ? currentH : null,
+    })
+
     setGenerating(true)
     updateProgress(5, t.generating)
 
@@ -58,8 +66,8 @@ export default function GenerateButton() {
       let blob: Blob
 
       if (currentMode === 'resolution') {
-        const lines = showInfo ? [`${currentW} × ${currentH} px`] : []
-        drawToCanvas(canvas, currentW, currentH, bg, text, lines, 0, showInfo)
+        const lines = showInfo ? [`${currentW} × ${currentH} px`, 'testimg.art'] : ['testimg.art']
+        drawToCanvas(canvas, currentW, currentH, bg, text, lines, 0, true)
         updateProgress(50, t.adjusting)
         blob = await canvasToBlob(canvas, currentFormat, 1.0)
         updateProgress(90)
@@ -70,22 +78,14 @@ export default function GenerateButton() {
         const targetBytes = targetSizeMB * 1024 * 1024
         blob = await adjustToTargetSize(canvas, targetBytes, currentFormat, bg, text, fsW, fsH, updateProgress, t)
 
-        if (showInfo) {
-          const finalLines = [`${canvas.width} × ${canvas.height} px`, formatBytes(targetBytes)]
-          drawTextOnly(canvas, text, finalLines)
-          blob = await canvasToBlob(canvas, currentFormat, 1.0)
-        }
+        const finalLines = showInfo
+          ? [`${canvas.width} × ${canvas.height} px`, formatBytes(targetBytes), 'testimg.art']
+          : ['testimg.art']
+        drawTextOnly(canvas, text, finalLines)
+        blob = await canvasToBlob(canvas, currentFormat, 1.0)
       }
 
       updateProgress(100, `${t.done} ${formatBytes(blob.size)}`)
-
-      trackDownload({
-        format: currentFormat.split('/')[1],
-        mode: currentMode,
-        sizeMb: currentMode === 'filesize' ? targetSizeMB : null,
-        width: canvas.width,
-        height: canvas.height,
-      })
 
       const previewCanvas = document.getElementById('preview-canvas') as HTMLCanvasElement | null
       if (previewCanvas) {
@@ -98,9 +98,16 @@ export default function GenerateButton() {
       }
 
       const ext = currentFormat.split('/')[1]
+      trackDownload({
+        format: ext,
+        mode: currentMode,
+        sizeMb: currentMode === 'filesize' ? targetSizeMB : null,
+        width: canvas.width,
+        height: canvas.height,
+      })
+
       if (isInAppBrowser()) {
-        setInAppToast(true)
-        setTimeout(() => setInAppToast(false), 6000)
+        setInAppModal(true)
       } else {
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
@@ -124,9 +131,29 @@ export default function GenerateButton() {
 
   return (
     <>
-      {inAppToast && (
-        <div className="fixed top-4 left-4 right-4 z-50 bg-neutral-800 border border-neutral-600 rounded-xl px-4 py-3 text-sm text-neutral-200 shadow-lg">
-          {t.inAppBrowserNotice}
+      {inAppModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setInAppModal(false) }}
+        >
+          <div className="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl p-6">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-base font-semibold text-neutral-100">{t.inAppBrowserTitle}</h2>
+              <button
+                onClick={() => setInAppModal(false)}
+                className="text-neutral-500 hover:text-neutral-300 transition-colors text-lg leading-none"
+              >
+                ✕
+              </button>
+            </div>
+            <p className="text-sm text-neutral-300 leading-relaxed">{t.inAppBrowserNotice}</p>
+            <button
+              onClick={() => setInAppModal(false)}
+              className="mt-6 w-full py-2.5 rounded-lg bg-neutral-800 text-neutral-300 text-sm hover:bg-neutral-700 transition-colors"
+            >
+              {t.close}
+            </button>
+          </div>
         </div>
       )}
       {/* 데스크탑: 기존 위치에 그대로 표시 */}
