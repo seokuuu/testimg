@@ -114,6 +114,6 @@ export const MESSAGES: Record<Lang, Messages> = {
     footerAuthor: '장석원',
     errorMaxResolution: '최대 해상도는 8000px입니다',
     inAppBrowserTitle: '다운로드 불가',
-    inAppBrowserNotice: '앱 내 브라우저에서는 다운로드가 제한됩니다. \n 우측 상단 메뉴에서 외부 브라우저로 열어주세요.',
+    inAppBrowserNotice: '앱 내 브라우저에서는 다운로드가 지원되지 않습니다. \n (⋯) 메뉴에서 "외부 브라우저로 열기"를 선택해주세요.',
   },
 }
