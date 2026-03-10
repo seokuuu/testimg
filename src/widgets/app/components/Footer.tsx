@@ -22,7 +22,7 @@ export default function Footer() {
             GitHub
           </a>
           <span className="text-neutral-700 text-xs">·</span>
-          <span className="text-xs text-neutral-700">Image Generator v1.0</span>
+          <span className="text-xs text-neutral-700">testImg v1.0</span>
         </div>
       </div>
     </footer>
