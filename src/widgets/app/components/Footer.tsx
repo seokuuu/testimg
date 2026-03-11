@@ -102,13 +102,13 @@ export default function Footer() {
               onClick={() => setShowChangelog(true)}
               className="text-xs text-neutral-700 hover:text-neutral-500 transition-colors"
             >
-              testImg v1.1
+              testImg v1.11
             </button>
           </div>
         </div>
       </footer>
 
-      {showFeedback && <FeedbackModal onClose={() => setShowFeedback(false)} />}
+      {showFeedback && <FeedbackModal lang={lang} onClose={() => setShowFeedback(false)} />}
       {showGitHub && <GitHubModal onClose={() => setShowGitHub(false)} />}
       {showChangelog && <ChangelogModal lang={lang} onClose={() => setShowChangelog(false)} />}
     </>

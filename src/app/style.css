@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: 'Pretendard', system-ui, sans-serif;
+}
