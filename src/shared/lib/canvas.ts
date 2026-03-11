@@ -45,7 +45,7 @@ export function drawTextLines(
   ctx.fillStyle = textColor
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
-  ctx.font = `bold ${fontSize}px 'Segoe UI', sans-serif`
+  ctx.font = `bold ${fontSize}px 'Pretendard', 'Segoe UI', sans-serif`
   const lineHeight = fontSize * 1.7
   const startY = h / 2 - (lineHeight * (lines.length - 1)) / 2
   lines.forEach((line, i) => ctx.fillText(line, w / 2, startY + i * lineHeight))

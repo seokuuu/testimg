@@ -33,6 +33,23 @@ export type Messages = {
   pngNote: string
   decimalNote: string
   feedbackButton: string
+  feedbackTitle: string
+  feedbackClose: string
+  feedbackThankYou: string
+  feedbackSentSuccess: string
+  feedbackTypeLabel: string
+  feedbackTypeBug: string
+  feedbackTypeFeature: string
+  feedbackTypeOther: string
+  feedbackMessageLabel: string
+  feedbackMessageRequired: string
+  feedbackMessagePlaceholder: string
+  feedbackEmailLabel: string
+  feedbackEmailOptional: string
+  feedbackErrorSend: string
+  feedbackCancel: string
+  feedbackSending: string
+  feedbackSubmit: string
   footerAuthor: string
   errorMaxResolution: string
   inAppBrowserTitle: string
@@ -73,6 +90,23 @@ export const MESSAGES: Record<Lang, Messages> = {
     pngNote: '※ PNG does not support size targeting',
     decimalNote: '※ Decimal sizes are approximate',
     feedbackButton: 'Send Feedback',
+    feedbackTitle: 'Send Feedback',
+    feedbackClose: 'Close',
+    feedbackThankYou: 'Thank you!',
+    feedbackSentSuccess: 'Your feedback has been sent successfully.',
+    feedbackTypeLabel: 'Type',
+    feedbackTypeBug: 'Bug Report',
+    feedbackTypeFeature: 'Feature Request',
+    feedbackTypeOther: 'Other',
+    feedbackMessageLabel: 'Message',
+    feedbackMessageRequired: '(required)',
+    feedbackMessagePlaceholder: 'Enter your message…',
+    feedbackEmailLabel: 'Email',
+    feedbackEmailOptional: '(optional, for replies)',
+    feedbackErrorSend: 'Failed to send. Please try again later.',
+    feedbackCancel: 'Cancel',
+    feedbackSending: 'Sending…',
+    feedbackSubmit: 'Submit',
     footerAuthor: 'Jang Seokwon',
     errorMaxResolution: 'Max resolution is 8000px',
     inAppBrowserTitle: 'Download Not Available',
@@ -111,6 +145,23 @@ export const MESSAGES: Record<Lang, Messages> = {
     pngNote: '※ PNG는 용량 조절을 지원하지 않습니다',
     decimalNote: '※ 소수점 단위 용량은 근사값입니다',
     feedbackButton: '피드백 보내기',
+    feedbackTitle: '피드백 보내기',
+    feedbackClose: '닫기',
+    feedbackThankYou: '감사합니다!',
+    feedbackSentSuccess: '피드백이 성공적으로 전송되었습니다.',
+    feedbackTypeLabel: '유형',
+    feedbackTypeBug: '버그 신고',
+    feedbackTypeFeature: '기능 제안',
+    feedbackTypeOther: '기타',
+    feedbackMessageLabel: '내용',
+    feedbackMessageRequired: '(필수)',
+    feedbackMessagePlaceholder: '내용을 입력해주세요…',
+    feedbackEmailLabel: '이메일',
+    feedbackEmailOptional: '(선택, 답변 받으실 경우)',
+    feedbackErrorSend: '전송에 실패했습니다. 잠시 후 다시 시도해주세요.',
+    feedbackCancel: '취소',
+    feedbackSending: '전송 중…',
+    feedbackSubmit: '제출',
     footerAuthor: '장석원',
     errorMaxResolution: '최대 해상도는 8000px입니다',
     inAppBrowserTitle: '다운로드 불가',

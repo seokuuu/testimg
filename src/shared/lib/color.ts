@@ -24,15 +24,13 @@ export const COLOR_PALETTES: Palette[] = [
   { bg: '#14213d', text: '#fca311' },
 ]
 
-export function getPalette(targetMB: number): Palette {
-  const idx = Math.min(19, Math.max(0, Math.floor(targetMB) - 1))
+export function getPalette(_targetMB: number): Palette {
+  const idx = Math.floor(Math.random() * COLOR_PALETTES.length)
   return COLOR_PALETTES[idx]
 }
 
-export function getColors(currentMode: Mode, targetSizeMB: number, currentW: number, currentH: number): Palette {
-  if (currentMode === 'filesize') return getPalette(targetSizeMB)
-  const pixels = currentW * currentH
-  const idx = Math.min(19, Math.floor(pixels / (7680 * 4320 / 20)))
+export function getColors(_currentMode: Mode, _targetSizeMB: number, _currentW: number, _currentH: number): Palette {
+  const idx = Math.floor(Math.random() * COLOR_PALETTES.length)
   return COLOR_PALETTES[idx]
 }
 

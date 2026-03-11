@@ -5,6 +5,14 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: 'v1.11',
+    items: [
+      { en: 'Pretendard font applied to UI and canvas', ko: 'Pretendard 폰트 UI 및 캔버스에 적용' },
+      { en: 'Background and text color now randomly selected on each download', ko: '다운로드 시마다 배경색·글자색 랜덤 선택' },
+      { en: 'Feedback modal now supports Korean and English', ko: '피드백 모달 한/영 다국어 처리 적용' },
+    ],
+  },
+  {
     version: 'v1.1',
     items: [
       { en: 'testimg.art watermark added to all generated images', ko: '생성된 이미지에 testimg.art 워터마크 추가' },
