@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: 'v1.12',
+    items: [
+      { en: 'PNG now supported in file size mode', ko: '용량 모드에서 PNG 포맷 지원 추가' },
+    ],
+  },
+  {
     version: 'v1.11',
     items: [
       { en: 'Pretendard font applied to UI and canvas', ko: 'Pretendard 폰트 UI 및 캔버스에 적용' },

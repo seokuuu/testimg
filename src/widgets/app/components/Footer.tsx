@@ -102,7 +102,7 @@ export default function Footer() {
               onClick={() => setShowChangelog(true)}
               className="text-xs text-neutral-700 hover:text-neutral-500 transition-colors"
             >
-              testImg v1.11
+              testImg v1.12
             </button>
           </div>
         </div>

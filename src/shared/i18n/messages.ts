@@ -30,7 +30,6 @@ export type Messages = {
   close: string
   searchPreset: string
   showInfo: string
-  pngNote: string
   decimalNote: string
   feedbackButton: string
   feedbackTitle: string
@@ -87,8 +86,7 @@ export const MESSAGES: Record<Lang, Messages> = {
     close: 'Close',
     searchPreset: 'Search…',
     showInfo: 'Show resolution & size on image',
-    pngNote: '※ PNG does not support size targeting',
-    decimalNote: '※ Decimal sizes are approximate',
+    decimalNote: '※ Output file size may vary slightly from the target',
     feedbackButton: 'Send Feedback',
     feedbackTitle: 'Send Feedback',
     feedbackClose: 'Close',
@@ -142,8 +140,7 @@ export const MESSAGES: Record<Lang, Messages> = {
     close: '닫기',
     searchPreset: '검색…',
     showInfo: '이미지에 해상도 & 용량 텍스트 표시',
-    pngNote: '※ PNG는 용량 조절을 지원하지 않습니다',
-    decimalNote: '※ 소수점 단위 용량은 근사값입니다',
+    decimalNote: '※ 용량은 소수점 단위 오차가 있을 수 있습니다',
     feedbackButton: '피드백 보내기',
     feedbackTitle: '피드백 보내기',
     feedbackClose: '닫기',

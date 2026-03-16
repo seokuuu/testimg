@@ -54,7 +54,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   function setMode(mode: Mode) {
-    if (mode === 'filesize' && currentFormat === 'image/png') setCurrentFormat('image/jpeg')
     setCurrentMode(mode)
   }
 

@@ -16,10 +16,7 @@ export default function FileSizePanel() {
                     className="bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 w-full"
                 />
             </div>
-            <div className='flex flex-col gap-1'>
-                <p className="text-xs text-neutral-600">{t.pngNote}</p>
-                <p className="text-xs text-neutral-600">{t.decimalNote}</p>
-            </div>
+            <p className="text-xs text-neutral-600">{t.decimalNote}</p>
 
         </section>
     )
