@@ -112,4 +112,4 @@ src/
 
 ---
 
-© 2025 장석원. MIT License.
+© 2025 장석원. All rights reserved.
