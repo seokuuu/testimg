@@ -111,5 +111,4 @@ src/
 - 입력값 유효성 검사
 
 ---
-
-© 2025 장석원. All rights reserved.
+© 2026 장석원. All rights reserved.
