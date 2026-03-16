@@ -56,6 +56,28 @@ export function drawTextOnly(canvas: HTMLCanvasElement, textColor: string, lines
   drawTextLines(ctx, canvas.width, canvas.height, textColor, lines)
 }
 
+export function applyAlphaNoise(canvas: HTMLCanvasElement, coverage: number): void {
+  const ctx = canvas.getContext('2d')!
+  const { width: w, height: h } = canvas
+  const imageData = ctx.getImageData(0, 0, w, h)
+  const data = imageData.data
+  const totalPixels = w * h
+
+  const noisyCount = Math.floor(coverage * totalPixels)
+  const randBuf = new Uint8Array(noisyCount)
+  for (let offset = 0; offset < noisyCount; offset += 65536) {
+    crypto.getRandomValues(randBuf.subarray(offset, Math.min(offset + 65536, noisyCount)))
+  }
+  for (let i = 0; i < noisyCount; i++) {
+    const pixelIdx = i * 4
+    data[pixelIdx]     = 0
+    data[pixelIdx + 1] = 0
+    data[pixelIdx + 2] = 0
+    data[pixelIdx + 3] = randBuf[i] | 1
+  }
+  ctx.putImageData(imageData, 0, 0)
+}
+
 export function canvasToBlob(canvas: HTMLCanvasElement, mime: string, quality?: number): Promise<Blob> {
   return new Promise(resolve => {
     if (mime === 'image/png') canvas.toBlob(b => resolve(b!), mime)

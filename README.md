@@ -84,6 +84,9 @@ src/
 
 ## Changelog
 
+### v1.12
+- 용량 모드에서 PNG 포맷 지원 추가 / PNG now supported in file size mode
+
 ### v1.11
 - Pretendard 폰트 UI 및 캔버스에 적용
 - 다운로드 시마다 배경색·글자색 랜덤 선택
@@ -108,5 +111,4 @@ src/
 - 입력값 유효성 검사
 
 ---
-
-© 2026 장석원. MIT License.
+© 2026 장석원. All rights reserved.

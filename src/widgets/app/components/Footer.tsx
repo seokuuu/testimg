@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { FeedbackModal } from '../../../features/feedback/index.js'
 import { ChangelogModal } from '../../../features/changelog/index.js'
+import PrivacyModal from '../../../features/privacy/components/PrivacyModal.js'
 import { useApp } from '../context/AppContext.js'
 
 const githubIcon = (
@@ -65,6 +66,7 @@ export default function Footer() {
   const [showFeedback, setShowFeedback] = useState(false)
   const [showGitHub, setShowGitHub] = useState(false)
   const [showChangelog, setShowChangelog] = useState(false)
+  const [showPrivacy, setShowPrivacy] = useState(false)
 
   return (
     <>
@@ -84,6 +86,13 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-4">
             <button
+              onClick={() => setShowPrivacy(true)}
+              className="text-xs text-neutral-600 hover:text-neutral-400 transition-colors"
+            >
+              {lang === 'ko' ? '개인정보처리방침' : 'Privacy Policy'}
+            </button>
+            <span className="text-neutral-700 text-xs">·</span>
+            <button
               onClick={() => setShowFeedback(true)}
               className="text-xs text-neutral-600 hover:text-neutral-400 transition-colors"
             >
@@ -102,7 +111,7 @@ export default function Footer() {
               onClick={() => setShowChangelog(true)}
               className="text-xs text-neutral-700 hover:text-neutral-500 transition-colors"
             >
-              testImg v1.11
+              testImg v1.12
             </button>
           </div>
         </div>
@@ -111,6 +120,7 @@ export default function Footer() {
       {showFeedback && <FeedbackModal lang={lang} onClose={() => setShowFeedback(false)} />}
       {showGitHub && <GitHubModal onClose={() => setShowGitHub(false)} />}
       {showChangelog && <ChangelogModal lang={lang} onClose={() => setShowChangelog(false)} />}
+      {showPrivacy && <PrivacyModal lang={lang} onClose={() => setShowPrivacy(false)} />}
     </>
   )
 }

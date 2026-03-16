@@ -3,14 +3,12 @@ import { useApp } from '../context/AppContext.js'
 export default function FormatSelector() {
   const { currentMode, currentFormat, setCurrentFormat, t } = useApp()
 
-  const formats = currentMode === 'filesize'
-    ? ['image/jpeg', 'image/webp']
-    : ['image/jpeg', 'image/webp', 'image/png']
+  const formats = ['image/jpeg', 'image/webp', 'image/png']
 
   return (
     <section className="bg-neutral-900 border border-neutral-800 rounded-2xl p-5 flex flex-col gap-3">
       <p className="text-xs font-semibold uppercase tracking-widest text-neutral-500">{t.format}</p>
-      <div className={`grid gap-2 ${currentMode === 'filesize' ? 'grid-cols-2' : 'grid-cols-3'}`}>
+      <div className="grid gap-2 grid-cols-3">
         {formats.map(mime => (
           <button
             key={mime}
