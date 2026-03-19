@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npm run build 2>&1)",
-      "Bash(git checkout -b feature/v1.1)"
+      "Bash(git checkout -b feature/v1.1)",
+      "Bash(grep -n \"ref={\" /Users/seokwon/IdeaProjects/image-generator/src/widgets/app/components/*.tsx)"
     ]
   }
 }
