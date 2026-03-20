@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useTransition } from 'react'
 import { useApp } from '../context/AppContext.js'
 import { getColors } from '../../../shared/lib/color.js'
 import { drawToCanvas, drawTextOnly, canvasToBlob } from '../../../shared/lib/canvas.js'
@@ -14,9 +14,9 @@ function isInAppBrowser() {
 
 export default function GenerateButton() {
   const { currentMode, currentW, currentH, currentFormat, targetSizeMB, showInfo, isGenerateDisabled, t } = useApp()
+  const [isPending, startTransition] = useTransition()
   const [progress, setProgress] = useState(0)
   const [statusMsg, setStatusMsg] = useState('')
-  const [generating, setGenerating] = useState(false)
   const [footerVisible, setFooterVisible] = useState(false)
   const [inAppModal, setInAppModal] = useState(false)
   const observerRef = useRef<IntersectionObserver | null>(null)
@@ -37,7 +37,7 @@ export default function GenerateButton() {
     if (msg) setStatusMsg(msg)
   }
 
-  async function handleGenerate() {
+  function handleGenerate() {
     if (currentMode === 'resolution') {
       if (!currentW || !currentH || currentW < 1 || currentH < 1) {
         setStatusMsg(t.errorResolution)
@@ -53,74 +53,74 @@ export default function GenerateButton() {
       return
     }
 
-    setGenerating(true)
-    updateProgress(5, t.generating)
+    startTransition(async () => {
+      updateProgress(5, t.generating)
 
-    const { bg, text } = getColors(currentMode, targetSizeMB, currentW, currentH)
-    const canvas = document.createElement('canvas')
+      const { bg, text } = getColors(currentMode, targetSizeMB, currentW, currentH)
+      const canvas = document.createElement('canvas')
 
-    try {
-      let blob: Blob
+      try {
+        let blob: Blob
 
-      if (currentMode === 'resolution') {
-        const lines = showInfo ? [`${currentW} × ${currentH} px`, 'testimg.art'] : ['testimg.art']
-        drawToCanvas(canvas, currentW, currentH, bg, text, lines, 0, true)
-        updateProgress(50, t.adjusting)
-        blob = await canvasToBlob(canvas, currentFormat, 1.0)
-        updateProgress(90)
-      } else {
-        const fsW = 1920, fsH = 1080
-        canvas.width = fsW
-        canvas.height = fsH
-        const targetBytes = targetSizeMB * 1024 * 1024
-        blob = await adjustToTargetSize(canvas, targetBytes, currentFormat, bg, text, fsW, fsH, updateProgress, t)
+        if (currentMode === 'resolution') {
+          const lines = showInfo ? [`${currentW} × ${currentH} px`, 'testimg.art'] : ['testimg.art']
+          drawToCanvas(canvas, currentW, currentH, bg, text, lines, 0, true)
+          updateProgress(50, t.adjusting)
+          blob = await canvasToBlob(canvas, currentFormat, 1.0)
+          updateProgress(90)
+        } else {
+          const fsW = 1920, fsH = 1080
+          canvas.width = fsW
+          canvas.height = fsH
+          const targetBytes = targetSizeMB * 1024 * 1024
+          blob = await adjustToTargetSize(canvas, targetBytes, currentFormat, bg, text, fsW, fsH, updateProgress, t)
 
-        const finalLines = showInfo
-          ? [`${canvas.width} × ${canvas.height} px`, formatBytes(targetBytes), 'testimg.art']
-          : ['testimg.art']
-        drawTextOnly(canvas, text, finalLines)
-        blob = await canvasToBlob(canvas, currentFormat, 1.0)
+          const finalLines = showInfo
+            ? [`${canvas.width} × ${canvas.height} px`, formatBytes(targetBytes), 'testimg.art']
+            : ['testimg.art']
+          drawTextOnly(canvas, text, finalLines)
+          blob = await canvasToBlob(canvas, currentFormat, 1.0)
+        }
+
+        updateProgress(100, `${t.done}`)
+
+        const previewCanvas = document.getElementById('preview-canvas') as HTMLCanvasElement | null
+        if (previewCanvas) {
+          const ctx = previewCanvas.getContext('2d')!
+          previewCanvas.width = canvas.width
+          previewCanvas.height = canvas.height
+          ctx.drawImage(canvas, 0, 0)
+          const meta = document.getElementById('preview-meta')
+          if (meta) meta.textContent = `${canvas.width} × ${canvas.height} px · ${formatBytes(blob.size)} · ${currentFormat.split('/')[1].toUpperCase()}`
+        }
+
+        const ext = currentFormat.split('/')[1]
+        trackDownload({
+          format: ext,
+          mode: currentMode,
+          sizeMb: currentMode === 'filesize' ? targetSizeMB : null,
+          width: canvas.width,
+          height: canvas.height,
+        })
+
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        const sizeSuffix = currentMode === 'filesize' ? `_${targetSizeMB}mb` : ''
+        a.download = `testimg.art_${canvas.width}x${canvas.height}${sizeSuffix}.${ext}`
+        a.click()
+        URL.revokeObjectURL(url)
+
+      } catch (e) {
+        setStatusMsg('Error occurred.')
+        console.error(e)
+      } finally {
+        setTimeout(() => {
+          setProgress(0)
+          setStatusMsg('')
+        }, 2000)
       }
-
-      updateProgress(100, `${t.done} ${formatBytes(blob.size)}`)
-
-      const previewCanvas = document.getElementById('preview-canvas') as HTMLCanvasElement | null
-      if (previewCanvas) {
-        const ctx = previewCanvas.getContext('2d')!
-        previewCanvas.width = canvas.width
-        previewCanvas.height = canvas.height
-        ctx.drawImage(canvas, 0, 0)
-        const meta = document.getElementById('preview-meta')
-        if (meta) meta.textContent = `${canvas.width} × ${canvas.height} px · ${formatBytes(blob.size)} · ${currentFormat.split('/')[1].toUpperCase()}`
-      }
-
-      const ext = currentFormat.split('/')[1]
-      trackDownload({
-        format: ext,
-        mode: currentMode,
-        sizeMb: currentMode === 'filesize' ? targetSizeMB : null,
-        width: canvas.width,
-        height: canvas.height,
-      })
-
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      const sizeSuffix = currentMode === 'filesize' ? `_${targetSizeMB}mb` : ''
-      a.download = `testimg.art_${canvas.width}x${canvas.height}${sizeSuffix}.${ext}`
-      a.click()
-      URL.revokeObjectURL(url)
-
-    } catch (e) {
-      setStatusMsg('Error occurred.')
-      console.error(e)
-    } finally {
-      setGenerating(false)
-      setTimeout(() => {
-        setProgress(0)
-        setStatusMsg('')
-      }, 2000)
-    }
+    })
   }
 
   return (
@@ -152,7 +152,7 @@ export default function GenerateButton() {
       )}
       {/* 데스크탑: 기존 위치에 그대로 표시 */}
       <div className="hidden lg:flex lg:flex-col gap-1">
-        {(generating || statusMsg) && (
+        {(isPending || statusMsg) && (
           <div className="flex flex-col gap-1">
             <div className="w-full h-1 bg-neutral-800 rounded-full overflow-hidden">
               <div
@@ -164,17 +164,17 @@ export default function GenerateButton() {
           </div>
         )}
         <button
-          disabled={isGenerateDisabled || generating}
+          disabled={isGenerateDisabled || isPending}
           onClick={handleGenerate}
           className="w-full py-4 rounded-xl bg-violet-600 hover:bg-violet-500 active:scale-[0.98] text-white font-semibold text-base transition-all disabled:bg-neutral-700 disabled:text-neutral-500 disabled:cursor-not-allowed"
         >
-          {generating ? t.generating : t.generate}
+          {isPending ? t.generating : t.generate}
         </button>
       </div>
 
       {/* 모바일: 하단 고정 (푸터 보이면 숨김) */}
       <div className={`lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-neutral-950/95 backdrop-blur-sm border-t border-neutral-800 px-4 py-3 flex flex-col gap-1.5 transition-transform duration-200 ${footerVisible ? 'translate-y-full' : 'translate-y-0'}`}>
-        {(generating || statusMsg) && (
+        {(isPending || statusMsg) && (
           <div className="flex flex-col gap-1">
             <div className="w-full h-1 bg-neutral-800 rounded-full overflow-hidden">
               <div
@@ -186,11 +186,11 @@ export default function GenerateButton() {
           </div>
         )}
         <button
-          disabled={isGenerateDisabled || generating}
+          disabled={isGenerateDisabled || isPending}
           onClick={handleGenerate}
           className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 active:scale-[0.98] text-white font-semibold text-base transition-all disabled:bg-neutral-700 disabled:text-neutral-500 disabled:cursor-not-allowed"
         >
-          {generating ? t.generating : t.generate}
+          {isPending ? t.generating : t.generate}
         </button>
       </div>
     </>

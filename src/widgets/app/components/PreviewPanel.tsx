@@ -4,16 +4,17 @@ import { getColors } from '../../../shared/lib/color.js'
 import { drawToCanvas } from '../../../shared/lib/canvas.js'
 
 export default function PreviewPanel() {
-  const { currentMode, targetSizeMB, currentW, currentH, showInfo, t } = useApp()
+  const { currentMode, targetSizeMB, inputSize, currentW, currentH, showInfo, t } = useApp()
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
     const { bg, text } = getColors(currentMode, targetSizeMB, currentW, currentH)
-    const lines = showInfo ? [`${currentW} × ${currentH} px`, '···'] : []
+    const sizeLabel = inputSize ? `${inputSize} MB` : '··· MB'
+    const lines = showInfo ? [`${currentW} × ${currentH} px`, currentMode === 'filesize' ? sizeLabel : ''] .filter(Boolean) : []
     drawToCanvas(canvas, currentW, currentH, bg, text, lines, 0, showInfo)
-  }, [currentMode, targetSizeMB, currentW, currentH, showInfo])
+  }, [currentMode, targetSizeMB, inputSize, currentW, currentH, showInfo])
 
   return (
     <section className="bg-neutral-900 border border-neutral-800 rounded-2xl p-4 flex flex-col items-center gap-3">
