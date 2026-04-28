@@ -7,6 +7,7 @@ import ResolutionPanel from './components/ResolutionPanel.js'
 import FileSizePanel from './components/FileSizePanel.js'
 import FormatSelector from './components/FormatSelector.js'
 import ShowInfoToggle from './components/ShowInfoToggle.js'
+import MemoPanel from './components/MemoPanel.js'
 import PreviewPanel from './components/PreviewPanel.js'
 import GenerateButton from './components/GenerateButton.js'
 import Footer from './components/Footer.js'
@@ -37,6 +38,7 @@ export default function App() {
             {currentMode === 'resolution' && <ResolutionPanel />}
             {currentMode === 'filesize' && <FileSizePanel />}
             <FormatSelector />
+            <MemoPanel />
             <ShowInfoToggle />
             {SHOW_ADS && (
               <div className="hidden lg:flex w-full h-[250px] bg-neutral-900 border border-dashed border-neutral-700 rounded-xl items-center justify-center text-xs text-neutral-600">

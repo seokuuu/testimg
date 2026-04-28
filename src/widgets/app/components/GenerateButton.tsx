@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useTransition } from 'react'
 import { useApp } from '../context/AppContext.js'
-import { getColors } from '../../../shared/lib/color.js'
 import { drawToCanvas, drawTextOnly, canvasToBlob } from '../../../shared/lib/canvas.js'
 import { formatBytes } from '../../../shared/lib/format.js'
 import { adjustToTargetSize } from '../../../features/generate/adjustSize.js'
@@ -13,7 +12,7 @@ function isInAppBrowser() {
 }
 
 export default function GenerateButton() {
-  const { currentMode, currentW, currentH, currentFormat, targetSizeMB, showInfo, isGenerateDisabled, t } = useApp()
+  const { currentMode, currentW, currentH, currentFormat, targetSizeMB, showInfo, memo, rerollPalette, isGenerateDisabled, t } = useApp()
   const [isPending, startTransition] = useTransition()
   const [progress, setProgress] = useState(0)
   const [statusMsg, setStatusMsg] = useState('')
@@ -56,14 +55,17 @@ export default function GenerateButton() {
     startTransition(async () => {
       updateProgress(5, t.generating)
 
-      const { bg, text } = getColors(currentMode, targetSizeMB, currentW, currentH)
+      const { bg, text } = rerollPalette()
       const canvas = document.createElement('canvas')
 
       try {
         let blob: Blob
 
         if (currentMode === 'resolution') {
-          const lines = showInfo ? [`${currentW} × ${currentH} px`, 'testimg.art'] : ['testimg.art']
+          const memoLine = memo.trim()
+          const lines = showInfo
+            ? [`${currentW} × ${currentH} px`, 'testimg.art', ...(memoLine ? [memoLine] : [])]
+            : ['testimg.art', ...(memoLine ? [memoLine] : [])]
           drawToCanvas(canvas, currentW, currentH, bg, text, lines, 0, true)
           updateProgress(50, t.adjusting)
           blob = await canvasToBlob(canvas, currentFormat, 1.0)
@@ -75,9 +77,10 @@ export default function GenerateButton() {
           const targetBytes = targetSizeMB * 1024 * 1024
           blob = await adjustToTargetSize(canvas, targetBytes, currentFormat, bg, text, fsW, fsH, updateProgress, t)
 
+          const memoLine = memo.trim()
           const finalLines = showInfo
-            ? [`${canvas.width} × ${canvas.height} px`, formatBytes(targetBytes), 'testimg.art']
-            : ['testimg.art']
+            ? [`${canvas.width} × ${canvas.height} px`, formatBytes(targetBytes), 'testimg.art', ...(memoLine ? [memoLine] : [])]
+            : ['testimg.art', ...(memoLine ? [memoLine] : [])]
           drawTextOnly(canvas, text, finalLines)
           blob = await canvasToBlob(canvas, currentFormat, 1.0)
         }

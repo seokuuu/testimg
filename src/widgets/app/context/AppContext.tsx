@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, type ReactNode } from 'react'
 import { PRESETS, type Preset } from '../../../entities/preset/presets.js'
 import { MESSAGES, type Lang, type Messages } from '../../../shared/i18n/messages.js'
-import type { Mode } from '../../../shared/lib/color.js'
+import { COLOR_PALETTES, type Mode, type Palette } from '../../../shared/lib/color.js'
 
 type AppContextValue = {
   lang: Lang
@@ -19,6 +19,10 @@ type AppContextValue = {
   inputSize: string
   showInfo: boolean
   setShowInfo: (v: boolean) => void
+  memo: string
+  setMemo: (v: string) => void
+  palette: Palette
+  rerollPalette: () => Palette
   selectedPreset: Preset | null
   isGenerateDisabled: boolean
   toggleLang: () => void
@@ -43,6 +47,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [targetSizeMB, setTargetSizeMB] = useState(5)
   const [inputSize, setInputSize] = useState('5')
   const [showInfo, setShowInfo] = useState(true)
+  const [memo, setMemoState] = useState('')
+  const [palette, setPalette] = useState<Palette>(
+    () => COLOR_PALETTES[Math.floor(Math.random() * COLOR_PALETTES.length)]
+  )
+
+  function setMemo(v: string) {
+    setMemoState(v.slice(0, 30))
+  }
+
+  function rerollPalette(): Palette {
+    const next = COLOR_PALETTES[Math.floor(Math.random() * COLOR_PALETTES.length)]
+    setPalette(next)
+    return next
+  }
   const [selectedPreset, setSelectedPreset] = useState<Preset | null>(
     PRESETS.find(p => p.w === 1920 && p.h === 1080) ?? null
   )
@@ -99,6 +117,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       currentFormat, setCurrentFormat,
       targetSizeMB, inputSize,
       showInfo, setShowInfo,
+      memo, setMemo,
+      palette, rerollPalette,
       selectedPreset,
       isGenerateDisabled,
       toggleLang, setMode, setWidth, setHeight, setSize, selectPreset,
