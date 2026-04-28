@@ -53,6 +53,8 @@ export type Messages = {
   errorMaxResolution: string
   inAppBrowserTitle: string
   inAppBrowserNotice: string
+  memoLabel: string
+  memoPlaceholder: string
 }
 
 export const MESSAGES: Record<Lang, Messages> = {
@@ -109,6 +111,8 @@ export const MESSAGES: Record<Lang, Messages> = {
     errorMaxResolution: 'Max resolution is 8000px',
     inAppBrowserTitle: 'Download Not Available',
     inAppBrowserNotice: 'Downloads are not supported in this in-app browser. \n Tap the (⋯) menu and select "Open in browser".',
+    memoLabel: 'Memo (optional, max 30 chars)',
+    memoPlaceholder: 'Enter a memo',
   },
   ko: {
     title: 'TestImg',
@@ -163,5 +167,7 @@ export const MESSAGES: Record<Lang, Messages> = {
     errorMaxResolution: '최대 해상도는 8000px입니다',
     inAppBrowserTitle: '다운로드 불가',
     inAppBrowserNotice: '앱 내 브라우저에서는 다운로드가 지원되지 않습니다. \n (⋯) 메뉴에서 "외부 브라우저로 열기"를 선택해주세요.',
+    memoLabel: '메모 (선택, 최대 30자)',
+    memoPlaceholder: '메모를 입력해주세요',
   },
 }

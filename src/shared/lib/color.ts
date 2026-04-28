@@ -24,16 +24,6 @@ export const COLOR_PALETTES: Palette[] = [
   { bg: '#14213d', text: '#fca311' },
 ]
 
-export function getPalette(_targetMB: number): Palette {
-  const idx = Math.floor(Math.random() * COLOR_PALETTES.length)
-  return COLOR_PALETTES[idx]
-}
-
-export function getColors(_currentMode: Mode, _targetSizeMB: number, _currentW: number, _currentH: number): Palette {
-  const idx = Math.floor(Math.random() * COLOR_PALETTES.length)
-  return COLOR_PALETTES[idx]
-}
-
 export function hexToRgb(hex: string): { r: number; g: number; b: number } {
   return {
     r: parseInt(hex.slice(1, 3), 16),
